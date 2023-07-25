@@ -2,7 +2,7 @@ from selenium import webdriver
 
 
 def before_feature(context, feature):
-    print("asd")
+    print("Тест начался")
     context.driver = webdriver.Chrome()
 
 

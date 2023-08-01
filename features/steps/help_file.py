@@ -4,6 +4,7 @@ import json
 from features.steps import global_params as GP
 
 
+
 def parse_tabel(tabel):
     params = {}
     for item in tabel:
@@ -16,23 +17,21 @@ def glob_params_tabel(tabel):
             tabel[k] = GP.EMAIL
         elif v == 'NAME':
             tabel[k] = GP.NAME
-        elif v == 'DICT':
-            tabel[k] = GP.DICT
+        elif v == 'ID':
+            tabel[k] = GP.ID
 
     return tabel
 
 def glob_params(param):
     if param == 'EMAIL':
         param = GP.EMAIL
+    elif param == 'ID':
+        param = GP.ID
 
     return param
 
 
-def parse_val(val):
-    result = None
-    match val:
-        case "body":
-            res
+
 
 
 
@@ -45,10 +44,8 @@ def http_metods(metod):
     url = None
 
     match metod:
-        case "doRegister":
-            url = 'http://users.bugred.ru/tasks/rest/doregister'
-        case "CreateCompany":
-            url = 'http://users.bugred.ru/tasks/rest/createcompany'
+        case "CreateItem":
+            url = GP.URL + "api/items/create/"
 
     return url
 
@@ -75,12 +72,25 @@ def date_doregister():
 
     return  body
 
-def date_createcompany():
+def date_create_item(values=None):
     date = """
     {
-  "company_name": "Алкоголики и тунеядцы",
-  "company_type": "ООО",
-  "company_users": ["test_anna@gmail.com", "mrak20@list.ru"],
-  "email_owner": "aa+1@mail.com"
+    "name":"",
+    "section":"",
+    "description":""
     }
     """
+
+    body = json.loads(date)
+    if values:
+        body.update(values)
+
+    GP.NAME = f"test_{generate_random_string(5)}"
+    GP.SECTION = f'{random.choice(GP.SECTION)}'
+    GP.DESCRIPTION = f"{generate_random_string(5)} {generate_random_string(5)}"
+
+    body['name']        = GP.NAME
+    body['section']     = GP.SECTION
+    body['description'] = GP.DESCRIPTION
+
+    return body

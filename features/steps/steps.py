@@ -2,6 +2,8 @@ import time
 import requests
 import help_file as HP
 import features.steps.global_params as GP
+import features.params.xpath_helper as XP
+import re
 
 from behave import step
 from selenium.webdriver.common.by import By
@@ -11,9 +13,9 @@ def open(context, *args):
   pass
 
 
-@step('Я захожу на "{url}"')
-def step_impl(context, url):
-    context.driver.get("http://" + url)
+@step('Я захожу на на стартовую страничку')
+def step_impl(context):
+    context.driver.get(GP.URL)
     time.sleep(1)
 
 
@@ -25,21 +27,27 @@ def step_impl(context, email, value):
 
 @step('Проверяем работу метода "{metod}"')
 def step_impl(context, metod):
-    # tabel = HP.parse_tabel(context.table)
+    tabel = HP.parse_tabel(context.table)
     # GP.DICT = HP.glob_params_tabel(tabel)
     # print(context.table[0])
-    if metod == "doRegister":
-        date = HP.date_doregister()
-    elif metod == "CreateCompany":
-        date = HP.date_createcompany()
+
+    if metod == "CreateItem":
+        body = HP.date_create_item(tabel)
 
     url = HP.http_metods(metod)
 
-    response = requests.post(url, date)
-    print(GP.DICT)
-    print(response.json())
+    response = requests.post(url, body)
+    GP.DICT = response.json()
+    GP.ID = GP.DICT['result']['id']
+    # print(response.status_code)
 
-    assert  response.status_code == 200
+
+    #
+    # response = requests.post(url, date)
+    # print(GP.DICT)
+    # print(response.json())
+    #
+    # assert  response.status_code == 200
 
 @step('Я ищу пользователя со значениями')
 def step_impl(context,):
@@ -53,3 +61,23 @@ def step_impl(context,):
     element.click()
     time.sleep(10)
 
+@step('Я захожу на страничку товара с id "{id}"')
+def step_impl(context,id):
+    item = HP.glob_params(id)
+    full_url = f"{GP.URL}shop/item/{item}"
+    context.driver.get(full_url)
+    print(GP.ID)
+    time.sleep(5)
+
+@step('Нахожу ссылку в параметрах товара')
+def step_impl(context):
+    xpath = XP.xpath_parser('xpath_param_item')
+    val = 'Параметры'
+    text = context.driver.find_element(By.XPATH, xpath % str(val))
+    print(text.text)
+    link = re.search('http\S+', text.text)
+    if link:
+        print(f'В параметрах товара найдена ссылка {link[0]}')
+    else:
+        raise ValueError(f'В параметрах товара ссылки - нет')
+    # print(link)

@@ -4,19 +4,16 @@
   Feature: Яндекс
 
     Scenario: Яндекс
-#      Given Я захожу на "users.bugred.ru"
-#      Then Ввожу в поле c email "mail2@mail.ru" и нажимаю кнопку "Посмотреть"
-      Given Проверяем работу метода "doRegister":
-        | key   | val    |
-        | email | laksdl |
-        | name  | hlaksd |
+      Given Проверяем работу метода "CreateItem":
+        | key    | value                                                                                                                                                                                                      |
+        | color  | RED                                                                                                                                                                                                        |
+        | size   | 20                                                                                                                                                                                                         |
+        | price  | 200                                                                                                                                                                                                        |
+        | params | Добро пожаловать в наш магазин, подробности на сайте https://vc.ru/s/1597527-python/637482-nachalnoe-rukovodstvo-po-python-dlya-nachinayushchih-programmistov-obzor-sintaksisa-bazovye-funkcii-i-operatory рады вас видеть |
 
-      Given Я захожу на "users.bugred.ru"
-      Then Я ищу пользователя со значениями:
-        | key   | val   |
-        | email | EMAIL |
-        | name  | NAME  |
-
+      Then Я захожу на на стартовую страничку
+      Then Я захожу на страничку товара с id "ID"
+      Then Нахожу ссылку в параметрах товара
 
 
 

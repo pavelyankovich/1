@@ -5,12 +5,11 @@ URL = 'http://shop.bugred.ru/'
 
 
 ID = ''
-EMAIL = 'test1234'
-NAME = 'test'
-DICT = None
-SECTION = ['Категория 1', 'Категория 2', 'Категория 3', 'Категория 4', 'Платья', 'Шорты', 'Верхняя одежда', 'Test', 'Брюки', 'Рубашки','Футболки',]
+EMAIL = ''
+NAME = ''
 DESCRIPTION = ''
 CURRENT_SECTION = ''
+SECTION = ['Категория 1', 'Категория 2', 'Категория 3', 'Категория 4', 'Платья', 'Шорты', 'Верхняя одежда', 'Test', 'Брюки', 'Рубашки','Футболки',]
 SECTION_LIST = [
     'Категория 1',
     'Категория 2',
@@ -24,7 +23,10 @@ SECTION_LIST = [
     'Рубашки',
     'Футболки'
     ]
-TABLE = None
 
-# span[style='background-color:#ff0000']
+
+TABLE = None
+DICT = None
+RESPONSE = None
+
 

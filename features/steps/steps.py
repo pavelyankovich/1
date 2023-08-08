@@ -1,9 +1,12 @@
+import json
 import time
 import requests
 import help_file as HP
 import features.steps.global_params as GP
 import features.params.xpath_helper as XP
 import re
+import colorama
+
 
 from behave import step
 from selenium.webdriver.common.by import By
@@ -50,10 +53,16 @@ def step_impl(context, metod):
         response = requests.post(url, body)
 
     GP.DICT = response.json()
-    print(GP.DICT)
+
     if metod == 'CreateItem':
         GP.ID = (GP.DICT['result']['id'])
 
+    # проверка результатов
+    if response.status_code == 200:
+        print(colorama.Fore.GREEN + f'Метод прошел успешно: code {response.status_code}')
+        print(colorama.Fore.YELLOW + f'{response.json()}')
+    else:
+        raise ValueError(f'Метод завершился с ошибкой: code {response.status_code}')
 @step('Я ищу пользователя со значениями')
 def step_impl(context,):
     tabel = HP.parse_tabel(context.table)
@@ -101,7 +110,7 @@ def step_impl(context):
     color = item_color.get_dom_attribute('style')
     color = color.split(':')[1]
     # print(GP.TABLE)
-    HP.comparing_colors(color,GP.TABLE['color'])
+
 
     # print(color)
     match item_name:
@@ -115,6 +124,14 @@ def step_impl(context):
     if item_price[0] == GP.TABLE.get("price"):
         print('Item price updated successfully!')
 
-
-
     print(GP.DICT.get("params"))
+
+@step('Получаем данные о товаре "{id}"')
+def step_impl(context, id):
+    item = {
+        'id' : f'{HP.glob_params(id)}'
+    }
+    date = json.dumps(item)
+    url = f'http://shop.bugred.ru/api/items/get'
+    response = requests.post(url, date)
+    GP.RESPONSE = response.json()

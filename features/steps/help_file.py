@@ -3,6 +3,7 @@ import string
 import json
 from features.steps import global_params as GP
 import webcolors
+import os
 
 
 def parse_tabel(tabel):
@@ -124,13 +125,22 @@ def date_create_item(values=None):
 
     return body
 
-def upload_photo(photo):
+def form_request_body_for_upload():
+    image_dir = 'features/File/Photo'
+    random_file = random.choice(os.listdir(image_dir))
+    file = os.path.join(image_dir, random_file)
 
-
-
-
+    photo = {
+        'photo': open(file, 'rb')
+    }
+    data = {
+        'id': GP.ID
+    }
+    return photo, data
 
 def comparing_colors(color_css,color_word):
     color_word = webcolors.name_to_hex(color_word)
     print(color_word)
     print(color_css)
+
+

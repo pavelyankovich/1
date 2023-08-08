@@ -1,6 +1,6 @@
 Feature: Яндекс
 
-    Scenario Outline: Яндекс
+    Scenario: Яндекс
       Given Проверяем работу метода "CreateItem":
         | key    | value                                                                                                                                                                                                      |
         | color  | RED                                                                                                                                                                                                        |
@@ -10,3 +10,6 @@ Feature: Яндекс
 
       Then Я захожу на страничку товара с id "ID"
       Then Нахожу ссылку в параметрах товара
+
+      And Проверяем работу метода "UploadPhoto"
+      And Я захожу на страничку товара с id "ID"

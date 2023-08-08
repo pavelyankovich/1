@@ -29,20 +29,26 @@ def step_impl(context, email, value):
 
 @step('Проверяем работу метода "{metod}"')
 def step_impl(context, metod):
-    tabel = HP.parse_tabel(context.table)
-    # GP.DICT = HP.glob_params_tabel(tabel)
-    # print(context.table[0])
+
+    if context.table:
+        tabel = HP.parse_tabel(context.table)
+    else:
+        pass
 
     if metod == "CreateItem":
         body = HP.date_create_item(tabel)
     elif metod == "UpdateItem":
         body = HP.update_item(tabel)
     elif metod == "UploadPhoto":
-        body = HP.
+        photo, body = HP.form_request_body_for_upload()
 
     url = HP.http_metods(metod)
 
-    response = requests.post(url, body)
+    if metod == "UploadPhoto":
+        response = requests.post(url, data = body, files = photo)
+    else:
+        response = requests.post(url, body)
+
     GP.DICT = response.json()
     print(GP.DICT)
     if metod == 'CreateItem':

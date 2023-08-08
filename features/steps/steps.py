@@ -1,7 +1,7 @@
 import json
 import time
 import requests
-import help_file as HP
+import help_file_rest as HP
 import features.steps.global_params as GP
 import features.params.xpath_helper as XP
 import re
@@ -11,8 +11,7 @@ import colorama
 from behave import step
 from selenium.webdriver.common.by import By
 
-
-
+colorama.init(autoreset=True)
 
 def open(context, *args):
   pass
@@ -29,6 +28,20 @@ def step_impl(context, email, value):
     element = context.driver.find_element(By.XPATH, f"//tr/td[contains(text(),'{email}')]/..//a[text()='{value}']")
     element.click()
     time.sleep(5)
+
+@step('Создаю товар через "{api}"')
+def step_impl(context, api):
+
+    if api == 'rest':
+        tabel = HP.parse_tabel(context.table)
+        body = HP.date_create_item(tabel)
+        url = HP.http_metods("CreateItem")
+        GP.RESPONSE = requests.post(url, body)
+    # elif api == 'soap':
+
+
+
+
 
 @step('Проверяем работу метода "{metod}"')
 def step_impl(context, metod):
@@ -62,7 +75,7 @@ def step_impl(context, metod):
         print(colorama.Fore.GREEN + f'Метод прошел успешно: code {response.status_code}')
         print(colorama.Fore.YELLOW + f'{response.json()}')
     else:
-        raise ValueError(f'Метод завершился с ошибкой: code {response.status_code}')
+        raise ValueError(colorama.Fore.RED +f'Метод завершился с ошибкой: code {response.status_code}')
 @step('Я ищу пользователя со значениями')
 def step_impl(context,):
     tabel = HP.parse_tabel(context.table)

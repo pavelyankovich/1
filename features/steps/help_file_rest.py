@@ -4,6 +4,7 @@ import json
 from features.steps import global_params as GP
 import webcolors
 import os
+import colorama
 
 
 def parse_tabel(tabel):
@@ -22,6 +23,9 @@ def glob_params_tabel(tabel):
             tabel[k] = GP.NAME
         elif v == 'ID':
             tabel[k] = GP.ID
+        # elif v == 'RAND_NAME':
+        #     tabel[k] = GP.RAND_NAME
+
 
     return tabel
 
@@ -57,6 +61,8 @@ def http_metods(metod):
             url = 'http://shop.bugred.ru/api/items/update/'
         case 'UploadPhoto':
             url = GP.URL + 'api/items/upload_photo/'
+        case 'Search':
+            url = GP.URL + "api/items/search/"
 
     return url
 
@@ -143,4 +149,9 @@ def comparing_colors(color_css,color_word):
     print(color_word)
     print(color_css)
 
-
+def show_messege(response):
+    if response.status_code == 200:
+        print(colorama.Fore.GREEN + f'Метод прошел успешно: code {response.status_code}')
+        print(colorama.Fore.YELLOW + f'{response.json()}')
+    else:
+        raise ValueError(colorama.Fore.RED +f'Метод завершился с ошибкой: code {response.status_code}')

@@ -9,3 +9,4 @@ cucumber-test-release-automation
 selenium
 webcolors
 requests
+suds

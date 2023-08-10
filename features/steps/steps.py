@@ -1,7 +1,7 @@
 import json
 import time
 import requests
-import help_file_rest as HP
+import help_file_rest as HPR
 import features.steps.global_params as GP
 import features.params.xpath_helper as XP
 import re
@@ -33,9 +33,9 @@ def step_impl(context, email, value):
 def step_impl(context, api):
 
     if api == 'rest':
-        tabel = HP.parse_tabel(context.table)
-        body = HP.date_create_item(tabel)
-        url = HP.http_metods("CreateItem")
+        tabel = HPR.parse_tabel(context.table)
+        body = HPR.date_create_item(tabel)
+        url = HPR.http_metods("CreateItem")
         GP.RESPONSE = requests.post(url, body)
     # elif api == 'soap':
 
@@ -47,18 +47,18 @@ def step_impl(context, api):
 def step_impl(context, metod):
 
     if context.table:
-        tabel = HP.parse_tabel(context.table)
+        tabel = HPR.parse_tabel(context.table)
     else:
         pass
 
     if metod == "CreateItem":
-        body = HP.date_create_item(tabel)
+        body = HPR.date_create_item(tabel)
     elif metod == "UpdateItem":
-        body = HP.update_item(tabel)
+        body = HPR.update_item(tabel)
     elif metod == "UploadPhoto":
-        photo, body = HP.form_request_body_for_upload()
+        photo, body = HPR.form_request_body_for_upload()
 
-    url = HP.http_metods(metod)
+    url = HPR.http_metods(metod)
 
     if metod == "UploadPhoto":
         response = requests.post(url, data = body, files = photo)
@@ -71,18 +71,14 @@ def step_impl(context, metod):
         GP.ID = (GP.DICT['result']['id'])
 
     # проверка результатов
-    if response.status_code == 200:
-        print(colorama.Fore.GREEN + f'Метод прошел успешно: code {response.status_code}')
-        print(colorama.Fore.YELLOW + f'{response.json()}')
-    else:
-        raise ValueError(colorama.Fore.RED +f'Метод завершился с ошибкой: code {response.status_code}')
+    HPR.show_messege(response)
 @step('Я ищу пользователя со значениями')
 def step_impl(context,):
-    tabel = HP.parse_tabel(context.table)
-    tabell = HP.glob_params_tabel(tabel)
+    tabel = HPR.parse_tabel(context.table)
+    tabell = HPR.glob_params_tabel(tabel)
     print(tabell)
-    val1 = HP.glob_params(tabell['email'])
-    val2 = HP.glob_params(tabell['name'])
+    val1 = HPR.glob_params(tabell['email'])
+    val2 = HPR.glob_params(tabell['name'])
     xpath = f"//tr/td[contains(text(),'{val1}')]/../td[contains(text(),'{val2}')]/../td/a[contains(text(),'Посмотреть')]"
     element = context.driver.find_element(By.XPATH,xpath)
     element.click()
@@ -90,7 +86,7 @@ def step_impl(context,):
 
 @step('Я захожу на страничку товара с id "{id}"')
 def step_impl(context,id):
-    item = HP.glob_params(id)
+    item = HPR.glob_params(id)
     full_url = f"{GP.URL}shop/item/{item}"
     context.driver.get(full_url)
     print(GP.ID)
@@ -142,9 +138,35 @@ def step_impl(context):
 @step('Получаем данные о товаре "{id}"')
 def step_impl(context, id):
     item = {
-        'id' : f'{HP.glob_params(id)}'
+        'id' : f'{HPR.glob_params(id)}'
     }
     date = json.dumps(item)
     url = f'http://shop.bugred.ru/api/items/get'
     response = requests.post(url, date)
     GP.RESPONSE = response.json()
+
+@step('Создаем "{numbers}" товара со следующими параметрами')
+def step_impl(context, numbers):
+    GP.TABLE = HPR.parse_tabel(context.table)
+    GP.NAME = GP.TABLE['name'] = f"{HPR.generate_random_string(10)}"
+    # item = HPR.glob_params_tabel(GP.TABLE)
+    body = json.dumps(GP.TABLE, indent= 4)
+    url = HPR.http_metods('CreateItem')
+    for num in range(int(numbers)):
+        response = requests.post(url, body)
+        GP.RESPONSES.append(response.json()['result'])
+
+    HPR.show_messege(response)
+
+
+@step('Находим все товары с названием "{name}"')
+def step_impl(context, name):
+    url = HPR.http_metods('Search')
+    if name == 'RAND_NAME':
+        name = GP.NAME
+
+    body = {
+        "query": name
+    }
+    response = requests.post(url, body)
+    print(response.json()['result'])

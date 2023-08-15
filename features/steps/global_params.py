@@ -4,7 +4,7 @@
 URL = 'http://shop.bugred.ru/'
 
 
-# RAND_NAME = f"{HP.generate_random_string(10)}"
+
 
 ID = ''
 EMAIL = ''

@@ -16,5 +16,7 @@ def xpath_parser(xpath):
             result = "//span[@class='label label-primary']"
         case 'item_color':
             result = "//div//span[@class='label']"
+        case 'button_in_upper_panel':
+            result = "//div//li[contains(@class,'nav-item')]/a[contains(text(),'%s')]"
     return result
 

@@ -17,9 +17,10 @@ def open(context, *args):
   pass
 
 
-@step('Я захожу на на стартовую страничку')
-def step_impl(context):
-    context.driver.get(GP.URL)
+@step('Я захожу на страничку "{name}"')
+def step_impl(context,name):
+    url = HPR.full_url(name)
+    context.driver.get(url)
     time.sleep(1)
 
 
@@ -141,16 +142,17 @@ def step_impl(context, id):
         'id' : f'{HPR.glob_params(id)}'
     }
     date = json.dumps(item)
-    url = f'http://shop.bugred.ru/api/items/get'
+    url = HPR.http_metods('Get')
     response = requests.post(url, date)
     GP.RESPONSE = response.json()
+    print(GP.RESPONSE)
 
 @step('Создаем "{numbers}" товара со следующими параметрами')
 def step_impl(context, numbers):
     GP.TABLE = HPR.parse_tabel(context.table)
-    GP.NAME = GP.TABLE['name'] = f"{HPR.generate_random_string(10)}"
-    # item = HPR.glob_params_tabel(GP.TABLE)
-    body = json.dumps(GP.TABLE, indent= 4)
+    item = HPR.glob_params_tabel(GP.TABLE)
+    body = json.dumps(item, indent= 4)
+    GP.NAME = item['name']
     url = HPR.http_metods('CreateItem')
     for num in range(int(numbers)):
         response = requests.post(url, body)
@@ -170,3 +172,35 @@ def step_impl(context, name):
     }
     response = requests.post(url, body)
     print(response.json()['result'])
+    print(response.json())
+
+
+
+@step('Удаляем товар с id "{id}"')
+def step_impl(context, id):
+    url = HPR.http_metods('Delete')
+    if id == 'ID':
+        id = GP.ID
+
+    body = {
+        "id": id
+    }
+    response = requests.post(url, body)
+    if response.json()['status'] == 'ok':
+        print(colorama.Fore.BLUE + f"{response.json()['result']}")
+    elif response.json()['status'] == 'error':
+        print(colorama.Fore.RED + f"{response.json()['message']}")
+
+@step('Нажимаю на кнопку "{name}" в меню в верхней панели')
+def step_impl(context, name):
+    xpath = XP.xpath_parser('button_in_upper_panel')
+    element = context.driver.find_element(By.XPATH, xpath % str(name))
+    element.click()
+    time.sleep(5)
+
+@step('В поле c id "{name} ввожу "{value}"')
+def step_impl(context, name, value):
+    # корявый шаг, корявый сайт
+    element = context.driver.find_element(By.ID,f"{name}")
+    element.click()
+    time.sleep(5)

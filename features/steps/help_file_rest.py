@@ -5,6 +5,7 @@ from features.steps import global_params as GP
 import webcolors
 import os
 import colorama
+from features.params import rand_value as RV
 
 
 def parse_tabel(tabel):
@@ -23,8 +24,8 @@ def glob_params_tabel(tabel):
             tabel[k] = GP.NAME
         elif v == 'ID':
             tabel[k] = GP.ID
-        # elif v == 'RAND_NAME':
-        #     tabel[k] = GP.RAND_NAME
+        elif v == 'RAND_NAME':
+            tabel[k] = RV.RAND_NAME
 
 
     return tabel
@@ -37,15 +38,17 @@ def glob_params(param):
 
     return param
 
+def full_url(url):
+    if url == "Регистрация":
+        url = GP.URL + "user/register/index "
+    elif url == "Главная":
+        url = GP.URL
+
+    return url
 
 
 
 
-
-def generate_random_string(length):
-    letters = string.ascii_lowercase
-    rand_string = ''.join(random.choice(letters) for i in range(length))
-    return rand_string
 
 def http_metods(metod):
     url = None
@@ -63,6 +66,10 @@ def http_metods(metod):
             url = GP.URL + 'api/items/upload_photo/'
         case 'Search':
             url = GP.URL + "api/items/search/"
+        case 'Get':
+            url = GP.URL + "api/items/get"
+        case 'Delete':
+            url = GP.URL + "api/items/delete"
 
     return url
 
@@ -78,8 +85,8 @@ def date_doregister():
     body = json.loads(date)
     print(f'{GP.EMAIL} и {GP.NAME}')
 
-    GP.EMAIL = f"{generate_random_string(10)}@test2.ru"
-    GP.NAME = f"{generate_random_string(10)}"
+    GP.EMAIL = f"{RV.generate_random_string(10)}@test2.ru"
+    GP.NAME = f"{RV.generate_random_string(10)}"
     password = "123123"
 
     # вставляем рандомные значения в Json
@@ -101,9 +108,9 @@ def update_item(values=None):
     if values:
         request_body.update(values)
     request_body["id"] = int(GP.ID)
-    GP.NAME = f'test_{generate_random_string(5)}'
+    GP.NAME = f'test_{RV.generate_random_string(5)}'
     GP.CURRENT_SECTION = random.choice(GP.SECTION_LIST)
-    GP.DESCRIPTION = f'{generate_random_string(25)}'
+    GP.DESCRIPTION = f'{RV.generate_random_string(25)}'
     request_body["name"] = GP.NAME
     request_body["section"] = GP.CURRENT_SECTION
     request_body["description"] = GP.DESCRIPTION
@@ -121,9 +128,9 @@ def date_create_item(values=None):
     if values:
         body.update(values)
 
-    GP.NAME = f"test_{generate_random_string(5)}"
+    GP.NAME = f"test_{RV.generate_random_string(5)}"
     GP.CURRENT_SECTION = f'{random.choice(GP.SECTION)}'
-    GP.DESCRIPTION = f"{generate_random_string(5)} {generate_random_string(5)}"
+    GP.DESCRIPTION = f"{RV.generate_random_string(5)} {RV.generate_random_string(5)}"
 
     body['name']        = GP.NAME
     body['section']     = GP.CURRENT_SECTION

@@ -31,18 +31,28 @@ def glob_params_tabel(tabel):
     return tabel
 
 def glob_params(param):
-    if param == 'EMAIL':
-        param = GP.EMAIL
-    elif param == 'ID':
-        param = GP.ID
+    match param:
+        case 'EMAIL':
+            param = GP.EMAIL
+        case 'ID':
+            param = GP.ID
+        case 'TEST_EMAIL':
+            param = GP.TEST_EMAIL
+        case 'TEST_PASSWORD':
+            param = GP.TEST_PASSWORD
+        case 'RAND_EMAIL':
+            param = RV.RAND_EMAIL
 
     return param
 
 def full_url(url):
-    if url == "Регистрация":
-        url = GP.URL + "user/register/index "
-    elif url == "Главная":
-        url = GP.URL
+    match url:
+        case "Регистрация":
+            url = GP.URL + "user/register/index"
+        case "Главная":
+            url = GP.URL
+        case 'Вход':
+            url = GP.URL + "user/login/index"
 
     return url
 

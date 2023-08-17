@@ -1,11 +1,15 @@
-# import help_file_rest as HP
+
+# тестовые данные
+TEST_EMAIL = 'test@mail.com'
+TEST_PASSWORD = '1'
 
 
+#базовый URL
 URL = 'http://shop.bugred.ru/'
 
 
 
-
+# глобальные переменные
 ID = ''
 EMAIL = ''
 NAME = None

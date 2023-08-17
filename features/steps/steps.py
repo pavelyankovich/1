@@ -201,8 +201,7 @@ def step_impl(context, name):
 
 @step('В поле c id "{name}" ввожу "{value}"')
 def step_impl(context, name, value):
-    if name == "exampleInputEmail1" and value == 'RAND_EMAIL':
-        value = RV.RAND_EMAIL
+    value = HPR.glob_params(value)
     element = context.driver.find_element(By.ID,f"{name}")
     element.send_keys(value)
     time.sleep(1)
@@ -219,3 +218,23 @@ def step_impl(context, exp_message):
     message_xpath = XP.xpath_parser('message_in_window')
     message = context.driver.find_element(By.XPATH, message_xpath % exp_message)
     print(colorama.Fore.GREEN + f"Окошко с сообщением '{message.text}' - найдено")
+
+
+@step('Нажимаю на кнопку "{name}" в выпадающем списке')
+def step_impl(context, name):
+    xpath = XP.xpath_parser('button_in_dropdown')
+    element = context.driver.find_element(By.XPATH, xpath % str(name))
+    element.click()
+    time.sleep(3)
+
+
+@step('В поле c id "{line}" ожидаю увидеть текст - "{text}"')
+def step_impl(context, line, text):
+    text = HPR.glob_params(text)
+    element = context.driver.find_element(By.ID, f"{line}")
+    if element.value == text:
+        print(colorama.Fore.GREEN + f"Поле с текстом '{text}' - найдено")
+    else:
+        print(colorama.Fore.RED + f"Поле с текстом '{text}' -  не найдено, а найдено - {element.text}")
+
+    time.sleep(1)

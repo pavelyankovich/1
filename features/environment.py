@@ -1,3 +1,5 @@
+import time
+
 from selenium import webdriver
 
 
@@ -8,3 +10,4 @@ def before_feature(context, feature):
 
 def after_feature(context, feature):
     context.driver.quit()
+    time.sleep(2)

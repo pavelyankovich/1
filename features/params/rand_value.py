@@ -8,3 +8,4 @@ def generate_random_string(length):
     return rand_string
 
 RAND_NAME = generate_random_string(10)
+RAND_EMAIL = generate_random_string(5)+'@test.ru'

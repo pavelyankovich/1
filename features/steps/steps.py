@@ -4,6 +4,7 @@ import requests
 import help_file_rest as HPR
 import features.steps.global_params as GP
 import features.params.xpath_helper as XP
+import features.params.rand_value as RV
 import re
 import colorama
 
@@ -196,11 +197,25 @@ def step_impl(context, name):
     xpath = XP.xpath_parser('button_in_upper_panel')
     element = context.driver.find_element(By.XPATH, xpath % str(name))
     element.click()
-    time.sleep(5)
+    time.sleep(3)
 
-@step('В поле c id "{name} ввожу "{value}"')
+@step('В поле c id "{name}" ввожу "{value}"')
 def step_impl(context, name, value):
-    # корявый шаг, корявый сайт
+    if name == "exampleInputEmail1" and value == 'RAND_EMAIL':
+        value = RV.RAND_EMAIL
     element = context.driver.find_element(By.ID,f"{name}")
+    element.send_keys(value)
+    time.sleep(1)
+
+@step('Нажимаю на кнопку "{button}"')
+def step_impl(context, button):
+    xpath = XP.xpath_parser("button")
+    element = context.driver.find_element(By.XPATH, xpath % str(button))
     element.click()
-    time.sleep(5)
+    time.sleep(2)
+
+@step('В окне ожидаю увидеть сообщение "{exp_message}"')
+def step_impl(context, exp_message):
+    message_xpath = XP.xpath_parser('message_in_window')
+    message = context.driver.find_element(By.XPATH, message_xpath % exp_message)
+    print(colorama.Fore.GREEN + f"Окошко с сообщением '{message.text}' - найдено")

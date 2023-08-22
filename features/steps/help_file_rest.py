@@ -6,6 +6,8 @@ import webcolors
 import os
 import colorama
 from features.params import rand_value as RV
+from bs4 import BeautifulSoup as BS
+
 
 
 def parse_tabel(tabel):
@@ -42,6 +44,8 @@ def glob_params(param):
             param = GP.TEST_PASSWORD
         case 'RAND_EMAIL':
             param = RV.RAND_EMAIL
+        case 'NAME':
+            param = GP.NAME
 
     return param
 
@@ -172,3 +176,6 @@ def show_messege(response):
         print(colorama.Fore.YELLOW + f'{response.json()}')
     else:
         raise ValueError(colorama.Fore.RED +f'Метод завершился с ошибкой: code {response.status_code}')
+
+
+# def get_atribut_teg (xpath)

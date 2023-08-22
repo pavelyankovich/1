@@ -71,6 +71,7 @@ def step_impl(context, metod):
 
     if metod == 'CreateItem':
         GP.ID = (GP.DICT['result']['id'])
+        GP.NAME = (GP.DICT['result']['name'])
 
     # проверка результатов
     HPR.show_messege(response)
@@ -232,9 +233,54 @@ def step_impl(context, name):
 def step_impl(context, line, text):
     text = HPR.glob_params(text)
     element = context.driver.find_element(By.ID, f"{line}")
-    if element.value == text:
+    if element.get_attribute("value") == text:
         print(colorama.Fore.GREEN + f"Поле с текстом '{text}' - найдено")
     else:
         print(colorama.Fore.RED + f"Поле с текстом '{text}' -  не найдено, а найдено - {element.text}")
 
     time.sleep(1)
+
+@step('Ввожу в поле "{line}" значение - "{value}"')
+def step_impl(context, line, value):
+    xpath = XP.xpath_parser('amount_item')
+    element = context.driver.find_element(By.XPATH, xpath % str(line))
+    element.send_keys(value)
+    time.sleep(2)
+
+@step('Нажимаем на значок корзины')
+def step_impl(context):
+    xpath = XP.xpath_parser('cart')
+    element = context.driver.find_element(By.XPATH, xpath)
+    element.click()
+    time.sleep(2)
+
+
+@step('Ожидаю что URL содержит - "{url}"')
+def step_impl(context, url):
+
+    if f'{url}' in context.driver.current_url:
+        print(colorama.Fore.GREEN + f"URL содержит значение - {url}")
+    else:
+        print(colorama.Fore.RED + f"Упс! Что то пошло не так!")
+
+    time.sleep(1)
+
+@step('Хочу найти в строке поиска товар - "{name}"')
+def step_impl(context, name):
+    name = HPR.glob_params(name)
+    xpath = XP.xpath_parser('search')
+    element = context.driver.find_element(By.XPATH, xpath)
+    element.send_keys(name)
+    button = XP.xpath_parser('search_button')
+    search_button = context.driver.find_element(By.XPATH, button)
+    search_button.click()
+    time.sleep(2)
+
+@step('Ожидаю увидеть товаров на странице - "{value}"')
+def step_impl(context, value):
+    xpath = XP.xpath_parser('item_row')
+    element = context.driver.find_elements(By.XPATH, xpath)
+    if len(element) == int(value):
+        print(colorama.Fore.GREEN + f"Количество найденных элементов совпадает с ожиданием!")
+    else:
+        print(colorama.Fore.RED + f"Упс! Количество найденных элементов = {len(element)}, а ожидали {int(value)}")

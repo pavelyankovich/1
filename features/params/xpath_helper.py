@@ -24,7 +24,16 @@ def xpath_parser(xpath):
             result = "//section[@id='alertify']//p[contains(text(), '%s')]"
         case 'button_in_dropdown':
             result = "//div[contains(@class,'dropdown-menu')]/a[contains(text(),'%s')]"
-
+        case 'amount_item':
+            result = "//div/label[contains(text(),'%s')]/../input"
+        case 'cart':
+            result = "//div[contains(@class, 'float-right')]/a"
+        case 'search':
+            result = "//form[contains(@class,'form-inline')]/input"
+        case 'search_button':
+            result = "//form[contains(@class,'form-inline')]/button"
+        case 'item_row':
+            result = "//div[contains(@class,'row')]/div[contains(@class,'col-md-4')]/a"
 
 
     return result

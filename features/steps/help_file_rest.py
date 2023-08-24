@@ -46,6 +46,12 @@ def glob_params(param):
             param = RV.RAND_EMAIL
         case 'NAME':
             param = GP.NAME
+        case 'RESPONSES':
+            param = GP.RESPONSES
+        case 'COLOR':
+            param = GP.COLOR
+        case 'SIZE':
+            param = GP.SIZE
 
     return param
 
@@ -57,6 +63,8 @@ def full_url(url):
             url = GP.URL
         case 'Вход':
             url = GP.URL + "user/login/index"
+        case '＼(〇_ｏ)／':
+            url = GP.URL + "shop/9"
 
     return url
 

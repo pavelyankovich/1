@@ -1,6 +1,8 @@
 import json
 import time
 import requests
+import pymysql
+from features.params.sql_params import HOST, USER, PASSWORD, DB_NAME
 import help_file_rest as HPR
 import features.steps.global_params as GP
 import features.params.xpath_helper as XP
@@ -160,6 +162,7 @@ def step_impl(context, numbers):
         response = requests.post(url, body)
         GP.RESPONSES.append(response.json()['result'])
 
+
     HPR.show_messege(response)
 
 
@@ -181,8 +184,7 @@ def step_impl(context, name):
 @step('Удаляем товар с id "{id}"')
 def step_impl(context, id):
     url = HPR.http_metods('Delete')
-    if id == 'ID':
-        id = GP.ID
+    id = HPR.glob_params(id)
 
     body = {
         "id": id
@@ -192,6 +194,25 @@ def step_impl(context, id):
         print(colorama.Fore.BLUE + f"{response.json()['result']}")
     elif response.json()['status'] == 'error':
         print(colorama.Fore.RED + f"{response.json()['message']}")
+
+
+@step('Удаляем товары с id "{id}"')
+def step_impl(context, id):
+    url = HPR.http_metods('Delete')
+    mass = HPR.glob_params(id)
+
+    for item in mass:
+        body = {
+            "id": item['id']
+        }
+        response = requests.post(url, body)
+        if response.json()['status'] == 'ok':
+            print(colorama.Fore.BLUE + f"{response.json()['result']}")
+        elif response.json()['status'] == 'error':
+            print(colorama.Fore.RED + f"{response.json()['message']}")
+
+
+
 
 @step('Нажимаю на кнопку "{name}" в меню в верхней панели')
 def step_impl(context, name):
@@ -284,3 +305,11 @@ def step_impl(context, value):
         print(colorama.Fore.GREEN + f"Количество найденных элементов совпадает с ожиданием!")
     else:
         print(colorama.Fore.RED + f"Упс! Количество найденных элементов = {len(element)}, а ожидали {int(value)}")
+
+@step('Нажимаю на чекбокс с названием - "{name}"')
+def step_impl(context, name):
+    xpath = XP.xpath_parser('checkbox')
+    element = context.driver.find_element(By.XPATH, xpath % str(name))
+    element.click()
+    time.sleep(2)
+

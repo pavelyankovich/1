@@ -34,7 +34,8 @@ def xpath_parser(xpath):
             result = "//form[contains(@class,'form-inline')]/button"
         case 'item_row':
             result = "//div[contains(@class,'row')]/div[contains(@class,'col-md-4')]/a"
-
+        case 'checkbox':
+            result = "//p[contains(text(),'%s')]/input[contains(@type,'checkbox')]"
 
     return result
 
